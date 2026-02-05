@@ -15,6 +15,15 @@ import { useHighScores } from '@/hooks/useHighScores';
 import SnakeGame from '@/components/games/SnakeGame';
 import TetrisGame from '@/components/games/TetrisGame';
 import PongGame from '@/components/games/PongGame';
+import SpaceShooterGame from '@/components/games/SpaceShooterGame';
+import BrickBreakerGame from '@/components/games/BrickBreakerGame';
+import MazeRunnerGame from '@/components/games/MazeRunnerGame';
+import MinesweeperGame from '@/components/games/MinesweeperGame';
+import AsteroidsGame from '@/components/games/AsteroidsGame';
+import PixelRacingGame from '@/components/games/PixelRacingGame';
+import PlatformerGame from '@/components/games/PlatformerGame';
+import TypingInvadersGame from '@/components/games/TypingInvadersGame';
+import FlappyPixelGame from '@/components/games/FlappyPixelGame';
 
 type GameState = 'start' | 'menu' | 'instructions' | 'inserting' | 'playing' | 'gameover';
 
@@ -96,21 +105,26 @@ const Index = () => {
         return <TetrisGame {...gameProps} />;
       case 'pong':
         return <PongGame {...gameProps} />;
+      case 'space-shooter':
+        return <SpaceShooterGame {...gameProps} />;
+      case 'brick-breaker':
+        return <BrickBreakerGame {...gameProps} />;
+      case 'maze-runner':
+        return <MazeRunnerGame {...gameProps} />;
+      case 'minesweeper':
+        return <MinesweeperGame {...gameProps} />;
+      case 'asteroids':
+        return <AsteroidsGame {...gameProps} />;
+      case 'pixel-racing':
+        return <PixelRacingGame {...gameProps} />;
+      case 'platformer':
+        return <PlatformerGame {...gameProps} />;
+      case 'typing-invaders':
+        return <TypingInvadersGame {...gameProps} />;
+      case 'flappy-pixel':
+        return <FlappyPixelGame {...gameProps} />;
       default:
-        return (
-          <div className="text-center p-8">
-            <p className="text-xl neon-text-yellow mb-4">COMING SOON</p>
-            <p className="text-sm text-muted-foreground">
-              {selectedGame.title} is under construction.
-            </p>
-            <button 
-              onClick={handleCloseGame}
-              className="arcade-btn mt-4 text-xs"
-            >
-              BACK TO MENU
-            </button>
-          </div>
-        );
+        return null;
     }
   };
 
