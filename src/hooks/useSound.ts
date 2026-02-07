@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 // Simple 8-bit style sound generation using Web Audio API
 const audioContext = typeof window !== 'undefined' ? new (window.AudioContext || (window as any).webkitAudioContext)() : null;
 
-type SoundType = 'coin' | 'select' | 'start' | 'powerup' | 'hit' | 'score' | 'gameover' | 'eat' | 'move';
+type SoundType = 'coin' | 'select' | 'start' | 'powerup' | 'hit' | 'score' | 'gameover' | 'eat' | 'move' | 'blip' | 'shoot' | 'explosion' | 'jump' | 'splash' | 'pop' | 'engine' | 'punch' | 'block' | 'whistle';
 
 const soundConfigs: Record<SoundType, { frequency: number; duration: number; type: OscillatorType; ramp?: boolean }> = {
   coin: { frequency: 1200, duration: 0.1, type: 'square', ramp: true },
@@ -15,6 +15,16 @@ const soundConfigs: Record<SoundType, { frequency: number; duration: number; typ
   gameover: { frequency: 200, duration: 0.5, type: 'sawtooth' },
   eat: { frequency: 500, duration: 0.05, type: 'square' },
   move: { frequency: 300, duration: 0.02, type: 'square' },
+  blip: { frequency: 700, duration: 0.08, type: 'square' },
+  shoot: { frequency: 400, duration: 0.1, type: 'sawtooth' },
+  explosion: { frequency: 100, duration: 0.3, type: 'sawtooth', ramp: true },
+  jump: { frequency: 300, duration: 0.15, type: 'triangle', ramp: true },
+  splash: { frequency: 200, duration: 0.2, type: 'sine' },
+  pop: { frequency: 900, duration: 0.06, type: 'square' },
+  engine: { frequency: 80, duration: 0.1, type: 'sawtooth' },
+  punch: { frequency: 120, duration: 0.12, type: 'sawtooth' },
+  block: { frequency: 250, duration: 0.08, type: 'square' },
+  whistle: { frequency: 1400, duration: 0.3, type: 'sine', ramp: true },
 };
 
 export const useSound = () => {
