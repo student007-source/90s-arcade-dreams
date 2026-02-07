@@ -15,6 +15,9 @@ const CELL_SIZE = 20;
 const INITIAL_SPEED = 150;
 const SPEED_INCREASE = 5;
 
+const GRACE_PERIOD = 1500; // 1.5 seconds before snake starts moving
+const COUNTDOWN_DURATION = 3; // 3 second countdown
+
 const SnakeGame = ({ onScoreChange, onGameOver, isActive }: SnakeGameProps) => {
   const [snake, setSnake] = useState<Position[]>([{ x: 10, y: 10 }]);
   const [food, setFood] = useState<Position>({ x: 15, y: 10 });
@@ -23,9 +26,27 @@ const SnakeGame = ({ onScoreChange, onGameOver, isActive }: SnakeGameProps) => {
   const [score, setScore] = useState(0);
   const [speed, setSpeed] = useState(INITIAL_SPEED);
   const [isPaused, setIsPaused] = useState(false);
+  const [isStarting, setIsStarting] = useState(true);
+  const [countdown, setCountdown] = useState(COUNTDOWN_DURATION);
   
   const directionRef = useRef(direction);
   const { playSound } = useSound();
+
+  // Countdown timer at game start
+  useEffect(() => {
+    if (!isActive || !isStarting) return;
+
+    if (countdown > 0) {
+      const timer = setTimeout(() => {
+        setCountdown(prev => prev - 1);
+        playSound('blip');
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else {
+      playSound('powerup');
+      setIsStarting(false);
+    }
+  }, [isActive, isStarting, countdown, playSound]);
 
   // Generate random food position
   const generateFood = useCallback((currentSnake: Position[]): Position => {
@@ -89,7 +110,7 @@ const SnakeGame = ({ onScoreChange, onGameOver, isActive }: SnakeGameProps) => {
 
   // Game loop
   useEffect(() => {
-    if (!isActive || gameOver || isPaused) return;
+    if (!isActive || gameOver || isPaused || isStarting) return;
 
     const gameLoop = setInterval(() => {
       setSnake(prevSnake => {
@@ -145,7 +166,7 @@ const SnakeGame = ({ onScoreChange, onGameOver, isActive }: SnakeGameProps) => {
     }, speed);
 
     return () => clearInterval(gameLoop);
-  }, [isActive, gameOver, isPaused, food, score, speed, generateFood, onScoreChange, onGameOver, playSound]);
+  }, [isActive, gameOver, isPaused, isStarting, food, score, speed, generateFood, onScoreChange, onGameOver, playSound]);
 
   // Reset game
   const resetGame = useCallback(() => {
@@ -157,6 +178,8 @@ const SnakeGame = ({ onScoreChange, onGameOver, isActive }: SnakeGameProps) => {
     setScore(0);
     setSpeed(INITIAL_SPEED);
     setIsPaused(false);
+    setIsStarting(true);
+    setCountdown(COUNTDOWN_DURATION);
     onScoreChange(0);
   }, [onScoreChange]);
 
@@ -237,6 +260,16 @@ const SnakeGame = ({ onScoreChange, onGameOver, isActive }: SnakeGameProps) => {
         {isPaused && !gameOver && (
           <div className="absolute inset-0 flex items-center justify-center bg-background/80">
             <p className="text-xl neon-text-yellow animate-blink">PAUSED</p>
+          </div>
+        )}
+
+        {/* Countdown overlay */}
+        {isStarting && !gameOver && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/80">
+            <p className="text-xs neon-text-cyan mb-4">GET READY!</p>
+            <p className="text-4xl neon-text-green animate-pulse">
+              {countdown > 0 ? countdown : 'GO!'}
+            </p>
           </div>
         )}
       </div>
