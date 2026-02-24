@@ -4,7 +4,7 @@ export interface GameInfo {
   id: string;
   title: string;
   description: string;
-  color: 'cyan' | 'magenta' | 'green' | 'yellow' | 'orange' | 'pink';
+  color: 'cyan' | 'magenta' | 'green' | 'yellow' | 'orange' | 'pink' | 'red' | 'blue' | 'purple';
   icon: string;
   controls: string;
   objective: string;
